@@ -1,5 +1,4 @@
 package com.example.techtext1;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,8 +20,8 @@ public class LoginActivity extends AppCompatActivity {
     public static final String TAG = "LoginActivity";
     private EditText etUsername;
     private EditText etPassword;
-    private Button btnLogin;
-    private Button btnSignup;
+    public Button btnLogin;
+    public Button btnSignup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +41,8 @@ public class LoginActivity extends AppCompatActivity {
                 loginUser(username, password);
             }
         });
+
+
         btnSignup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -49,28 +50,6 @@ public class LoginActivity extends AppCompatActivity {
                 String username = etUsername.getText().toString();
                 String password = etPassword.getText().toString();
                 signupUser(username, password);
-            }
-        });
-    }
-
-    private void signupUser(String username, String password) {
-        // Create the ParseUser
-        ParseUser user = new ParseUser();
-        // Set core properties
-        user.setUsername(username);
-        user.setPassword(password);
-        // Set custom properties
-        // Invoke signUpInBackground
-        user.signUpInBackground(new SignUpCallback() {
-            @Override
-            public void done(ParseException e) {
-                if (e == null) {
-                    Log.e(TAG, "Issue with sign up", e);
-                    return;
-                }
-                // TODO: navigate to the main activity if the user has signed in properly
-                goMainActivity();
-                Toast.makeText(LoginActivity.this, "Success!", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -91,8 +70,37 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    private void signupUser(String username, String password) {
+        // Create the ParseUser
+        ParseUser user = new ParseUser();
+        // Set core properties
+        user.setUsername(username);
+        user.setPassword(password);
+        // Set custom properties
+
+        // Invoke signUpInBackground
+        user.signUpInBackground(new SignUpCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e == null) {
+                    Log.e(TAG, "Success", e);
+                    ParseUser.logOut();
+                    return;
+                }
+                // TODO: navigate to the SignUp activity if the user has signed in properly
+
+                goSignUpActivity();
+                Toast.makeText(LoginActivity.this, "Success!", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     private void goMainActivity() {
         Intent i = new Intent(this, MainActivity.class);
+        startActivity(i);
+    }
+    private void goSignUpActivity() {
+        Intent i = new Intent(this, SignUpActivity.class);
         startActivity(i);
     }
 }
